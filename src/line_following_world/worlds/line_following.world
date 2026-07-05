@@ -1,0 +1,85 @@
+<?xml version="1.0" ?>
+<sdf version="1.6">
+
+<world name="line_following_world">
+
+  <include>
+    <uri>model://ground_plane</uri>
+  </include>
+
+  <include>
+    <uri>model://sun</uri>
+  </include>
+
+  <!-- Long orange line, tracked via HSV colour filtering -->
+
+  <model name="line_track">
+    <static>true</static>
+
+    <link name="line">
+
+      <visual name="visual">
+        <geometry>
+          <box>
+            <size>8 0.15 0.01</size>
+          </box>
+        </geometry>
+
+        <material>
+          <ambient>1 0.85 0 1</ambient>
+          <diffuse>1 0.85 0 1</diffuse>
+          <emissive>1 0.85 0 1</emissive>
+        </material>
+      </visual>
+
+      <pose>0 0 0.005 0 0 0</pose>
+
+    </link>
+
+  </model>
+
+  <!-- Obstacle -->
+
+  <model name="obstacle_box">
+    <static>true</static>
+
+    <link name="link">
+
+      <collision name="collision">
+        <geometry>
+          <box>
+            <size>0.4 0.4 0.4</size>
+          </box>
+        </geometry>
+      </collision>
+
+      <visual name="visual">
+        <geometry>
+          <box>
+            <size>0.4 0.4 0.4</size>
+          </box>
+        </geometry>
+
+        <material>
+          <ambient>1 0 0 1</ambient>
+          <diffuse>1 0 0 1</diffuse>
+        </material>
+      </visual>
+
+      <pose>2 0 0.2 0 0 0</pose>
+
+    </link>
+
+  </model>
+
+  <!-- Note: no standalone world camera here. The spawned TurtleBot3 Waffle Pi
+       already carries its own forward-facing camera publishing to
+       /camera/image_raw; a second static camera previously defined here
+       collided with it on the same topic (both plugins publish to
+       /camera/image_raw and /camera/camera_info), causing the detector to
+       receive an inconsistent interleaving of frames from two different
+       viewpoints. -->
+
+</world>
+
+</sdf>

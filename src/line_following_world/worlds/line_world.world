@@ -1,0 +1,110 @@
+<?xml version="1.0" ?>
+<sdf version="1.6">
+
+<world name="line_world">
+
+  <include>
+    <uri>model://ground_plane</uri>
+  </include>
+
+  <include>
+    <uri>model://sun</uri>
+  </include>
+
+  <!-- Second scenario: an orange line with a 90-degree bend, plus two
+       obstacles (one before the bend, one after) to exercise obstacle
+       avoidance both on a straight run and right after a turn.
+       No standalone world camera is defined here either -- the spawned
+       TurtleBot3's own onboard camera publishes /camera/image_raw. -->
+
+  <model name="line_segment_straight">
+    <static>true</static>
+    <link name="line">
+      <visual name="visual">
+        <geometry>
+          <box>
+            <size>5 0.15 0.01</size>
+          </box>
+        </geometry>
+        <material>
+          <ambient>1 0.85 0 1</ambient>
+          <diffuse>1 0.85 0 1</diffuse>
+          <emissive>1 0.85 0 1</emissive>
+        </material>
+      </visual>
+      <pose>2.5 0 0.005 0 0 0</pose>
+    </link>
+  </model>
+
+  <model name="line_segment_bend">
+    <static>true</static>
+    <link name="line">
+      <visual name="visual">
+        <geometry>
+          <box>
+            <size>0.15 3 0.01</size>
+          </box>
+        </geometry>
+        <material>
+          <ambient>1 0.85 0 1</ambient>
+          <diffuse>1 0.85 0 1</diffuse>
+          <emissive>1 0.85 0 1</emissive>
+        </material>
+      </visual>
+      <pose>5 1.5 0.005 0 0 0</pose>
+    </link>
+  </model>
+
+  <model name="obstacle_box_1">
+    <static>true</static>
+    <link name="link">
+      <collision name="collision">
+        <geometry>
+          <box>
+            <size>0.4 0.4 0.4</size>
+          </box>
+        </geometry>
+      </collision>
+      <visual name="visual">
+        <geometry>
+          <box>
+            <size>0.4 0.4 0.4</size>
+          </box>
+        </geometry>
+        <material>
+          <ambient>1 0 0 1</ambient>
+          <diffuse>1 0 0 1</diffuse>
+        </material>
+      </visual>
+      <pose>3 0 0.2 0 0 0</pose>
+    </link>
+  </model>
+
+  <model name="obstacle_box_2">
+    <static>true</static>
+    <link name="link">
+      <collision name="collision">
+        <geometry>
+          <box>
+            <size>0.4 0.4 0.4</size>
+          </box>
+        </geometry>
+      </collision>
+      <visual name="visual">
+        <geometry>
+          <box>
+            <size>0.4 0.4 0.4</size>
+          </box>
+        </geometry>
+        <material>
+          <ambient>1 0 0 1</ambient>
+          <diffuse>1 0 0 1</diffuse>
+        </material>
+      </visual>
+      <pose>5 2.2 0.2 0 0 0</pose>
+    </link>
+  </model>
+
+</world>
+
+</sdf>
