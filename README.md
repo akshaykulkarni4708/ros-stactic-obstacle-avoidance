@@ -315,8 +315,25 @@ functional unit tests:
 
 ## Local environment note
 
-`rviz2` may fail to start on some machines with
+`rviz2` may fail to start with
 `symbol lookup error: .../snap/core20/.../libpthread.so.0: undefined symbol:
-__libc_pthread_init` -- a pre-existing snap/glibc library conflict on that
-machine, unrelated to this workspace. `use_rviz:=true` will still fail the
-same way there; it is not something to fix by editing this repo.
+__libc_pthread_init`. This isn't a workspace bug -- it happens when the
+shell was itself launched from inside a snap-confined app (e.g. VS Code
+installed via snap), which leaks `GTK_PATH`, `GTK_EXE_PREFIX`,
+`GDK_PIXBUF_MODULE_FILE`, `GDK_PIXBUF_MODULEDIR`, `GIO_MODULE_DIR`,
+`GSETTINGS_SCHEMA_DIR`, and `LOCPATH` into the environment, pointing at
+the confined snap's own (incompatible) library set. Qt's GTK theme
+integration picks those up and pulls in a mismatched `libpthread` from the
+`core20` base snap. Confirmed fix -- unset those specific variables before
+launching:
+
+```bash
+env -u GTK_PATH -u GTK_EXE_PREFIX -u GDK_PIXBUF_MODULE_FILE \
+    -u GDK_PIXBUF_MODULEDIR -u GIO_MODULE_DIR -u GSETTINGS_SCHEMA_DIR \
+    -u LOCPATH -u GIO_LAUNCHED_DESKTOP_FILE \
+    ros2 launch line_following_world line_following.launch.py use_rviz:=true
+```
+
+Verified working this way: `rviz2` starts, initializes OpenGL, and
+subscribes to every topic in `rviz/line_follower.rviz`
+(`/camera/image_raw`, `/line_mask`, `/scan`, `/odom`, `/robot_description`).

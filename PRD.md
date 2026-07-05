@@ -196,3 +196,32 @@ already documented for the bend case in `line_world.world`. `README.md`
 now describes this world accurately. `line_world.world` (the more
 spacious two-obstacle scenario) was reconfirmed fully working: clean
 single-pass dodges, comfortable clearance, stable recovery.
+
+## 7. Follow-up session: search-direction bug, world extension, dodge tuning, RViz2 verified
+
+A later cross-check against the proposal document directly (not just this
+PRD) found the `SEARCH_LINE` recovery could reacquire the line facing
+**backward** and drive the full length of the track into the same
+obstacle repeatedly -- the actual cause behind reports of the robot "not
+going beyond the obstacle." Root cause: the sweep always defaulted to the
+same direction regardless of which way the dodge had turned, so on a
+straight, featureless line it could lock onto the line from either
+direction. Fixed in `obstacle_avoid.py`: the sweep now starts toward
+`-turn_dir` (the side the line actually ended up on), bounded to +/-130
+degrees from the heading `TURN_BACK` restored, with a 45s give-up
+fallback. Verified live: SEARCH_LINE now reacquires in single-digit
+seconds and the robot continues in the correct direction. A related fix
+in `line_controller.py` (`lost_timeout_sec`) stops the robot instead of
+searching indefinitely once the line has been lost too long during
+ordinary cruising, for the same reason.
+
+Also this session: `line_following.world` extended from an 8m
+single-obstacle line to an 18m course (14m straight + 4m bend, 3
+obstacles, 4m+ clearance each); the dodge maneuver itself was tightened by
+request (`forward_distance_m`: 2.20 -> 1.90 -> 1.75m, each step verified
+live with zero `EMERGENCY` events); and `rviz2` was confirmed actually
+working (not just configured) -- it had never launched successfully
+before this session on this machine due to snap-confinement environment
+variables leaking in from VS Code (see `README.md`'s "Local environment
+note" for the fix). A git repository was also initialized for this
+workspace, which had none.
