@@ -220,6 +220,22 @@ line-following resumed. Minimum clearance across the whole run never
 dropped below ~0.39m -- comfortably clear of `emergency_distance` (0.25m)
 in every recorded encounter.
 
+**Update: `forward_distance_m` tightened from 2.20 to 1.90** to make the
+dodge a smaller, quicker maneuver (per request -- the original swing was
+wider than needed and took longer to rejoin the line). `avoid_distance`
+and the ~40 degree turn angle were left unchanged since they govern the
+safety-critical closest-approach clearance (point 1 above), which
+doesn't depend on `forward_distance_m`. The two distances that do scale
+with it stay comfortably clear of their failure thresholds: resting
+distance drops from ~1.41m to ~1.22m (still well above
+`avoid_distance=0.80`, so `IDLE` doesn't immediately re-detect the same
+obstacle) and along-track clearance drops from ~1.69m to ~1.46m (still
+well clear of the ~1.23m that previously undershot and caused repeated
+contact). Verified live: two dodges against `line_following.world`'s
+first obstacle, both with **zero** `EMERGENCY` events, a visibly
+tighter lateral offset (~0.93m observed, down from ~1.2-1.4m), and
+`SEARCH_LINE` reacquiring in as little as ~2.7s.
+
 Retry counts (both the `STOP`/`TURN` emergency-recompute kind and the
 "needed a second full dodge near the bend" kind) will still vary run to
 run with the exact angle/position at first detection -- that's a
