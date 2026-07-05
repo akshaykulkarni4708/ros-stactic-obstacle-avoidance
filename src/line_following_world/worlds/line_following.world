@@ -11,9 +11,13 @@
     <uri>model://sun</uri>
   </include>
 
-  <!-- Long orange line, tracked via HSV colour filtering -->
+  <!-- Longer orange line, tracked via HSV colour filtering. A straight
+       run (14m) followed by a 90-degree bend (4m) so the course isn't
+       just a single straight segment. Three obstacles are spread along
+       it with generous clearance on every side (4m+), rather than the
+       single obstacle sitting only 2m into the original 8m line. -->
 
-  <model name="line_track">
+  <model name="line_segment_straight">
     <static>true</static>
 
     <link name="line">
@@ -21,7 +25,7 @@
       <visual name="visual">
         <geometry>
           <box>
-            <size>8 0.15 0.01</size>
+            <size>14 0.15 0.01</size>
           </box>
         </geometry>
 
@@ -32,13 +36,42 @@
         </material>
       </visual>
 
-      <pose>0 0 0.005 0 0 0</pose>
+      <pose>1 0 0.005 0 0 0</pose>
 
     </link>
 
   </model>
 
-  <!-- Obstacle -->
+  <!-- Bend continues from the end of the straight segment (x=8, y=0) up
+       to (x=8, y=4), turning the track 90 degrees. -->
+
+  <model name="line_segment_bend">
+    <static>true</static>
+
+    <link name="line">
+
+      <visual name="visual">
+        <geometry>
+          <box>
+            <size>0.15 4 0.01</size>
+          </box>
+        </geometry>
+
+        <material>
+          <ambient>1 0.85 0 1</ambient>
+          <diffuse>1 0.85 0 1</diffuse>
+          <emissive>1 0.85 0 1</emissive>
+        </material>
+      </visual>
+
+      <pose>8 2 0.005 0 0 0</pose>
+
+    </link>
+
+  </model>
+
+  <!-- Obstacle 1: 4m clear before it (from spawn at x=0), 5m clear after
+       it before the bend starts. -->
 
   <model name="obstacle_box">
     <static>true</static>
@@ -66,7 +99,75 @@
         </material>
       </visual>
 
-      <pose>2 0 0.2 0 0 0</pose>
+      <pose>3 0 0.2 0 0 0</pose>
+
+    </link>
+
+  </model>
+
+  <!-- Obstacle 2: earlier on the straight, well before obstacle 1. -->
+
+  <model name="obstacle_box_2">
+    <static>true</static>
+
+    <link name="link">
+
+      <collision name="collision">
+        <geometry>
+          <box>
+            <size>0.4 0.4 0.4</size>
+          </box>
+        </geometry>
+      </collision>
+
+      <visual name="visual">
+        <geometry>
+          <box>
+            <size>0.4 0.4 0.4</size>
+          </box>
+        </geometry>
+
+        <material>
+          <ambient>1 0 0 1</ambient>
+          <diffuse>1 0 0 1</diffuse>
+        </material>
+      </visual>
+
+      <pose>-2 0 0.2 0 0 0</pose>
+
+    </link>
+
+  </model>
+
+  <!-- Obstacle 3: partway up the bend, 2m clear on either side of it. -->
+
+  <model name="obstacle_box_3">
+    <static>true</static>
+
+    <link name="link">
+
+      <collision name="collision">
+        <geometry>
+          <box>
+            <size>0.4 0.4 0.4</size>
+          </box>
+        </geometry>
+      </collision>
+
+      <visual name="visual">
+        <geometry>
+          <box>
+            <size>0.4 0.4 0.4</size>
+          </box>
+        </geometry>
+
+        <material>
+          <ambient>1 0 0 1</ambient>
+          <diffuse>1 0 0 1</diffuse>
+        </material>
+      </visual>
+
+      <pose>8 2 0.2 0 0 0</pose>
 
     </link>
 

@@ -48,7 +48,7 @@ Useful arguments:
 
 | Argument | Default | Purpose |
 |---|---|---|
-| `world_file` | `line_following.world` | `line_following.world` (straight 8 m line, one obstacle at 2 m from track center) or `line_world.world` (line with a 90-degree bend + two obstacles) |
+| `world_file` | `line_following.world` | `line_following.world` (14 m straight + 4 m 90-degree bend, three obstacles each with 4 m+ clearance) or `line_world.world` (5 m straight + 3 m bend, two obstacles) |
 | `turtlebot3_model` | `waffle_pi` | TurtleBot3 model to spawn |
 | `use_rviz` | `false` | Also launch RViz2 (`rviz/line_follower.rviz`: RobotModel, TF, LaserScan, onboard camera image, `/line_mask`, Odometry) |
 | `use_sim_time` | `true` | Standard sim-clock switch |
@@ -261,18 +261,17 @@ clearance never below ~0.39m, and `SEARCH_LINE` recovering in
 single-digit seconds after a clean pass (versus 100+ seconds with the
 bigger, first-attempt geometry).
 
-`line_following.world` has its own single `obstacle_box` positioned only
-2m from the center of its 8m straight line -- a tighter case than either
-obstacle in `line_world.world`, whose surrounding track has more room.
-Live-tested repeatedly: every individual dodge attempt against it stayed
-safe (zero `EMERGENCY` events across five encounters in one run, minimum
-clearance never approaching contact), but because the line has no
-directionality and the track is short, the robot can end up re-approaching
-the same obstacle from the opposite direction after a dodge, rather than
-clearing it once and moving on -- safe, but not efficient, on this
-particular world. This is the same class of position-blind-spot limitation
-as the bend case above, just more visible here because there's so little
-track on either side of the obstacle to absorb it.
+`line_following.world` was originally a single 8m straight line with one
+`obstacle_box` only 2m from its center -- tight enough that the robot
+could end up re-approaching the same obstacle from the opposite
+direction after a dodge instead of clearing it and moving on. It's now
+an 18m course (14m straight + a 4m 90-degree bend) with three obstacles,
+each with 4m+ clearance on both sides, closer to `line_world.world`'s
+more forgiving spacing. The underlying position-blind-spot limitation
+described above (the dodge logic tracks heading, not position relative
+to the line) is unchanged -- more room around each obstacle just makes
+a same-obstacle re-encounter far less likely to happen in the first
+place.
 
 ## Tests
 
