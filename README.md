@@ -220,21 +220,24 @@ line-following resumed. Minimum clearance across the whole run never
 dropped below ~0.39m -- comfortably clear of `emergency_distance` (0.25m)
 in every recorded encounter.
 
-**Update: `forward_distance_m` tightened from 2.20 to 1.90** to make the
-dodge a smaller, quicker maneuver (per request -- the original swing was
-wider than needed and took longer to rejoin the line). `avoid_distance`
-and the ~40 degree turn angle were left unchanged since they govern the
-safety-critical closest-approach clearance (point 1 above), which
-doesn't depend on `forward_distance_m`. The two distances that do scale
-with it stay comfortably clear of their failure thresholds: resting
-distance drops from ~1.41m to ~1.22m (still well above
-`avoid_distance=0.80`, so `IDLE` doesn't immediately re-detect the same
-obstacle) and along-track clearance drops from ~1.69m to ~1.46m (still
-well clear of the ~1.23m that previously undershot and caused repeated
-contact). Verified live: two dodges against `line_following.world`'s
-first obstacle, both with **zero** `EMERGENCY` events, a visibly
-tighter lateral offset (~0.93m observed, down from ~1.2-1.4m), and
-`SEARCH_LINE` reacquiring in as little as ~2.7s.
+**Update: `forward_distance_m` tightened further, 2.20 -> 1.90 -> 1.75**,
+to make the dodge as small a maneuver as safely possible (per request --
+the original swing was wider than needed and took longer to rejoin the
+line). `avoid_distance` and the ~40 degree turn angle were left unchanged
+since they govern the safety-critical closest-approach clearance (point 1
+above), which doesn't depend on `forward_distance_m`. At 1.75m, the two
+distances that do scale with it are getting closer to their documented
+failure thresholds but stay clear of them: resting distance is ~1.13m
+(vs. `avoid_distance=0.80`, so `IDLE` doesn't immediately re-detect the
+same obstacle) and along-track clearance is ~1.34m (vs. the ~1.23m that
+previously undershot and caused repeated contact) -- a real but no longer
+large margin, so this is close to the practical floor for this geometry;
+pushing meaningfully lower without also revisiting `avoid_distance` or the
+turn angle risks reintroducing that contact failure. Verified live: three
+dodges against `line_following.world` (including the harder one right by
+the bend), all with **zero** `EMERGENCY` events, lateral offset down to
+~0.40m (from ~1.2-1.4m originally), and `SEARCH_LINE` reacquiring in as
+little as ~3s.
 
 Retry counts (both the `STOP`/`TURN` emergency-recompute kind and the
 "needed a second full dodge near the bend" kind) will still vary run to

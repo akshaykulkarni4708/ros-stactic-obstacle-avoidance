@@ -92,7 +92,7 @@ def generate_launch_description():
     turn_time_sec_arg = DeclareLaunchArgument('turn_time_sec', default_value='2.30')
     turn_speed_arg = DeclareLaunchArgument('turn_speed', default_value='0.30')
     forward_speed_arg = DeclareLaunchArgument('forward_speed', default_value='0.12')
-    forward_distance_m_arg = DeclareLaunchArgument('forward_distance_m', default_value='1.90')
+    forward_distance_m_arg = DeclareLaunchArgument('forward_distance_m', default_value='1.75')
     forward_time_sec_arg = DeclareLaunchArgument('forward_time_sec', default_value='15.00')
     yaw_tolerance_deg_arg = DeclareLaunchArgument('yaw_tolerance_deg', default_value='5.0')
     search_turn_speed_arg = DeclareLaunchArgument('search_turn_speed', default_value='0.12')
