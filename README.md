@@ -48,12 +48,12 @@ Useful arguments:
 
 | Argument | Default | Purpose |
 |---|---|---|
-| `world_file` | `line_following.world` | `line_following.world` (14 m straight + 4 m 90-degree bend, three obstacles each with 4 m+ clearance) or `line_world.world` (5 m straight + 3 m bend, two obstacles) |
+| `world_file` | `line_following.world` | `line_following.world` (original: 8 m straight line, one obstacle 2 m from track center), `line_following_extended.world` (14 m straight + 4 m 90-degree bend, three obstacles each with 4 m+ clearance), or `line_world.world` (5 m straight + 3 m bend, two obstacles) |
 | `turtlebot3_model` | `waffle_pi` | TurtleBot3 model to spawn |
 | `use_rviz` | `false` | Also launch RViz2 (`rviz/line_follower.rviz`: RobotModel, TF, LaserScan, onboard camera image, `/line_mask`, Odometry) |
 | `use_sim_time` | `true` | Standard sim-clock switch |
 
-Example: `ros2 launch line_following_world line_following.launch.py world_file:=line_world.world use_rviz:=true`
+Example: `ros2 launch line_following_world line_following.launch.py world_file:=line_following_extended.world use_rviz:=true`
 
 ## Run on real hardware
 
@@ -120,11 +120,12 @@ steering gains above are what govern tracking stability, not the base
 forward speed, and the controller's existing slowdown-when-turning ramp
 (full speed only when error is small, scaling down toward `min_linear_x`
 as error grows) already protects sharp turns regardless of the cruise
-speed. Verified live end-to-end on `line_following.world` at the new
-speed: the long straight run held stable tracking (no oscillation), the
-90-degree bend produced a large but transient error spike (as expected
-for a sharp corner) that recovered cleanly without ever losing the line,
-and all three obstacles dodged with **zero** `EMERGENCY` events.
+speed. Verified live end-to-end on the bend-and-three-obstacle course
+(now `line_following_extended.world`) at the new speed: the long straight
+run held stable tracking (no oscillation), the 90-degree bend produced a
+large but transient error spike (as expected for a sharp corner) that
+recovered cleanly without ever losing the line, and all three obstacles
+dodged with **zero** `EMERGENCY` events.
 
 The same sensitivity applies to `obstacle_avoid`'s `SEARCH_LINE` state,
 which spins the robot in place to re-find the line after dodging an
@@ -246,8 +247,9 @@ previously undershot and caused repeated contact) -- a real but no longer
 large margin, so this is close to the practical floor for this geometry;
 pushing meaningfully lower without also revisiting `avoid_distance` or the
 turn angle risks reintroducing that contact failure. Verified live: three
-dodges against `line_following.world` (including the harder one right by
-the bend), all with **zero** `EMERGENCY` events, lateral offset down to
+dodges against the bend-and-three-obstacle course (now
+`line_following_extended.world`), including the harder one right by the
+bend, all with **zero** `EMERGENCY` events, lateral offset down to
 ~0.40m (from ~1.2-1.4m originally), and `SEARCH_LINE` reacquiring in as
 little as ~3s.
 
@@ -292,17 +294,23 @@ clearance never below ~0.39m, and `SEARCH_LINE` recovering in
 single-digit seconds after a clean pass (versus 100+ seconds with the
 bigger, first-attempt geometry).
 
-`line_following.world` was originally a single 8m straight line with one
+`line_following.world` is a single 8m straight line with one
 `obstacle_box` only 2m from its center -- tight enough that the robot
-could end up re-approaching the same obstacle from the opposite
-direction after a dodge instead of clearing it and moving on. It's now
-an 18m course (14m straight + a 4m 90-degree bend) with three obstacles,
-each with 4m+ clearance on both sides, closer to `line_world.world`'s
-more forgiving spacing. The underlying position-blind-spot limitation
-described above (the dodge logic tracks heading, not position relative
-to the line) is unchanged -- more room around each obstacle just makes
-a same-obstacle re-encounter far less likely to happen in the first
-place.
+can end up re-approaching the same obstacle from the opposite direction
+after a dodge instead of clearing it and moving on (this is the
+underlying position-blind-spot limitation described above -- the dodge
+logic tracks heading, not position relative to the line -- just more
+visible here since there's little track on either side to absorb it).
+Live-tested repeatedly: every individual dodge against it stays safe
+(zero `EMERGENCY` events), it's just not always efficient on this
+particular world.
+
+`line_following_extended.world` was built from the same layout, stretched
+into an 18m course (14m straight + a 4m 90-degree bend) with three
+obstacles, each with 4m+ clearance on both sides -- closer to
+`line_world.world`'s more forgiving spacing, and useful when you want to
+show a longer, cleaner run without the tight single-obstacle world's
+re-approach quirk.
 
 ## Tests
 
