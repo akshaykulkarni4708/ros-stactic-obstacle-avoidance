@@ -62,13 +62,13 @@ def generate_launch_description():
     contour_switch_confirm_frames_arg = DeclareLaunchArgument(
         'contour_switch_confirm_frames', default_value='3')
 
-    linear_x_arg = DeclareLaunchArgument('linear_x', default_value='0.04')
+    linear_x_arg = DeclareLaunchArgument('linear_x', default_value='0.10')
     k_p_arg = DeclareLaunchArgument('k_p', default_value='0.004')
     max_ang_z_arg = DeclareLaunchArgument('max_ang_z', default_value='0.4')
     steer_sign_arg = DeclareLaunchArgument('steer_sign', default_value='-1.0')
     search_w_arg = DeclareLaunchArgument('search_w', default_value='0.35')
     search_linear_x_arg = DeclareLaunchArgument('search_linear_x', default_value='0.02')
-    min_linear_x_arg = DeclareLaunchArgument('min_linear_x', default_value='0.02')
+    min_linear_x_arg = DeclareLaunchArgument('min_linear_x', default_value='0.04')
     slowdown_error_arg = DeclareLaunchArgument('slowdown_error', default_value='80.0')
     turn_in_place_error_arg = DeclareLaunchArgument('turn_in_place_error', default_value='240.0')
     error_deadband_arg = DeclareLaunchArgument('error_deadband', default_value='10.0')

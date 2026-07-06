@@ -114,6 +114,18 @@ and hold it for the full run in testing. If you increase `k_p`/`max_ang_z`
 for a faster response, re-validate against the long straight line first --
 that's the scenario most sensitive to this effect.
 
+**Cruise speed increased, `linear_x` 0.04 -> 0.10 m/s** (`min_linear_x`
+0.02 -> 0.04 m/s), per request, without touching `k_p`/`max_ang_z` -- the
+steering gains above are what govern tracking stability, not the base
+forward speed, and the controller's existing slowdown-when-turning ramp
+(full speed only when error is small, scaling down toward `min_linear_x`
+as error grows) already protects sharp turns regardless of the cruise
+speed. Verified live end-to-end on `line_following.world` at the new
+speed: the long straight run held stable tracking (no oscillation), the
+90-degree bend produced a large but transient error spike (as expected
+for a sharp corner) that recovered cleanly without ever losing the line,
+and all three obstacles dodged with **zero** `EMERGENCY` events.
+
 The same sensitivity applies to `obstacle_avoid`'s `SEARCH_LINE` state,
 which spins the robot in place to re-find the line after dodging an
 obstacle: spinning at the full obstacle-dodge `turn_speed` (0.30 rad/s)
